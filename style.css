@@ -61,14 +61,19 @@ body {
 
 .mountain-bg {
     background-image: url('mountain01.png');
-    background-size: 100% 100%;
-    background-position: center;
+    background-size: cover;
+    background-position: center bottom;
 }
 
 .mountain-ans-bg {
     background-image: url('mountainans.png');
-    background-size: 100% 100%;
-    background-position: center;
+    background-size: contain; /* 將 cover 改成 contain，保證圖片完整顯示不裁切 */
+    background-position: center top; /* 讓圖片貼齊畫面底部 */
+    background-repeat: no-repeat; /* 避免螢幕太長時，圖片一直重複拼貼 */
+}
+
+button {
+    touch-action: manipulation;
 }
 
 .text-outline {

@@ -8,36 +8,34 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="p-4 md:p-8">
-    <div id="game-container" class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden relative min-h-[550px]">
-        <div class="absolute inset-0 mountain-bg overflow-hidden text-center rounded-2xl">
-            <button onclick="window.location.href='intro.html'" class="absolute top-4 left-4 z-30 text-gray-800 hover:text-black font-extrabold text-sm transition duration-200 text-outline pointer-events-auto">
-                &larr; 返回
-            </button>
+    <div id="game-container" class="max-w-2xl mx-auto bg-white p-4 md:p-10 rounded-2xl shadow-xl overflow-hidden relative min-h-[100dvh] md:min-h-[600px] flex flex-col justify-between">
+        <div class="relative w-full aspect-[4/3] md:aspect-video mountain-bg overflow-hidden text-center rounded-2xl flex-grow mt-10 md:mt-0 shadow-inner border border-gray-200">
+    
+    <button onclick="window.location.href='intro.html'" class="absolute top-4 left-4 z-30 text-gray-800 hover:text-black font-extrabold text-sm transition duration-200 text-outline pointer-events-auto">
+        &larr; 返回
+    </button>
 
-            <div class="absolute inset-0 pointer-events-none z-10">
-                <div onclick="returnToPool(0)" id="slot-0" class="pointer-events-auto absolute w-[16%] h-[10%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg" style="left: 14%; top: 73%; transform: translate(-50%, -50%);"></div>
-                <div onclick="returnToPool(1)" id="slot-1" class="pointer-events-auto absolute w-[16%] h-[10%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg" style="left: 31%; top: 51%; transform: translate(-50%, -50%);"></div>
-                <div onclick="returnToPool(2)" id="slot-2" class="pointer-events-auto absolute w-[16%] h-[10%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg" style="left: 59%; top: 18%; transform: translate(-50%, -50%);"></div>
-                <div onclick="returnToPool(3)" id="slot-3" class="pointer-events-auto absolute w-[16%] h-[10%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg" style="left: 77%; top: 51%; transform: translate(-50%, -50%);"></div>
-                <div onclick="returnToPool(4)" id="slot-4" class="pointer-events-auto absolute w-[16%] h-[10%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg" style="left: 92%; top: 68%; transform: translate(-50%, -50%);"></div>
-            </div>
+    <div class="absolute inset-0 pointer-events-none z-10">
+        <div onclick="returnToPool(0)" id="slot-0" class="pointer-events-auto absolute w-[16%] h-[12%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg" style="left: 14%; top: 73%; transform: translate(-50%, -50%);"></div>
+        <div onclick="returnToPool(1)" id="slot-1" class="pointer-events-auto absolute w-[16%] h-[12%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg" style="left: 31%; top: 51%; transform: translate(-50%, -50%);"></div>
+        <div onclick="returnToPool(2)" id="slot-2" class="pointer-events-auto absolute w-[16%] h-[12%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg" style="left: 59%; top: 18%; transform: translate(-50%, -50%);"></div>
+        <div onclick="returnToPool(3)" id="slot-3" class="pointer-events-auto absolute w-[16%] h-[12%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg" style="left: 77%; top: 51%; transform: translate(-50%, -50%);"></div>
+        <div onclick="returnToPool(4)" id="slot-4" class="pointer-events-auto absolute w-[16%] h-[12%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg" style="left: 92%; top: 68%; transform: translate(-50%, -50%);"></div>
+    </div>
+</div>
 
-            <div class="relative z-20 flex flex-col items-center justify-end pb-6 p-4 w-full h-full pointer-events-none">
-                <div class="max-w-lg w-full relative pointer-events-auto">
-                    <p class="text-gray-900 text-lg md:text-xl font-extrabold leading-relaxed mb-3 text-outline">
-                        看到這座山，你還記得「故事山」<br>
-                        由左到右的五個階段分別是什麼嗎？
-                    </p>
-                    <div class="mb-2">
-                        <p class="text-sm md:text-base text-blue-900 font-extrabold mb-3 text-outline tracking-wider">💡 點擊下方旗子，放到圖中對應的空白處：</p>
-                        <div id="options-pool" class="flex flex-wrap justify-center gap-2 min-h-[40px] mb-2"></div>
-                        <div id="feedback-msg" class="h-6 text-sm flex items-center justify-center text-outline"></div>
-                    </div>
-                    <button id="success-next-btn" onclick="window.location.href='answer.html'" class="hidden bg-[#1da453] hover:bg-green-700 text-white font-bold py-2.5 px-8 rounded-full transition duration-300 shadow-xl transform hover:scale-105 mx-auto mt-1 border-2 border-white/50">
-                        進入解答頁
-                    </button>
-                </div>
-            </div>
+<div class="relative z-20 flex flex-col items-center pb-4 pt-4 w-full bg-white">
+    <div class="max-w-lg w-full relative">
+        <div class="mb-2">
+            <p class="text-sm md:text-base text-blue-900 font-extrabold mb-3 tracking-wider text-center">💡 點擊下方旗子，放到圖中對應的空白處：</p>
+            <div id="options-pool" class="flex flex-wrap justify-center gap-2 min-h-[40px] mb-2"></div>
+            <div id="feedback-msg" class="h-6 text-sm flex items-center justify-center mt-2"></div>
+        </div>
+        <button id="success-next-btn" onclick="window.location.href='answer.html'" class="hidden bg-[#1da453] hover:bg-green-700 text-white font-bold py-2.5 px-8 rounded-full transition duration-300 shadow-xl transform hover:scale-105 mx-auto mt-2 border-2 border-white/50 block">
+            進入解答頁
+        </button>
+    </div>
+</div>
         </div>
     </div>
     <script src="game.js"></script>
