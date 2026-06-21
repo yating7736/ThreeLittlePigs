@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>故事山挑戰：三隻小豬</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Noto+Serif+TC', serif;
+            background-color: #f3f4f6;
+        }
+
+        .mountain-container {
+            position: relative;
+            height: 200px;
+            width: 100%;
+            background: #fff;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .mountain-step {
+            width: 15%;
+            background: #e5e7eb;
+            transition: all 0.5s ease;
+            position: relative;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .mountain-step.active {
+            background: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        .mountain-step.completed {
+            background: #93c5fd;
+        }
+
+        /* 模擬山形高度 */
+        .step-1 { height: 20%; }
+        .step-2 { height: 50%; }
+        .step-3 { height: 90%; }
+        .step-4 { height: 50%; }
+        .step-5 { height: 20%; }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 滿版背景圖片樣式 - 首頁與引言頁 */
+        .full-cover-bg {
+            background-image: url('Gemini_Generated_Image_khej4akhej4akhej.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* 滿版背景圖片樣式 - 故事山提問頁 (為了讓定位點不跑位，強制貼齊 100%) */
+        .mountain-bg {
+            background-image: url('mountain01.png');
+            background-size: 100% 100%;
+            background-position: center;
+        }
+
+        /* 滿版背景圖片樣式 - 故事山解答頁 */
+        .mountain-ans-bg {
+            background-image: url('mountainans.png');
+            background-size: 100% 100%;
+            background-position: center;
+        }
+
+        /* 文字白邊與陰影效果，確保去背後文字清晰可讀 */
+        .text-outline {
+            text-shadow: 
+                -1px -1px 0 #ffffff,  
+                 1px -1px 0 #ffffff,
+                -1px  1px 0 #ffffff,
+                 1px  1px 0 #ffffff,
+                 0px  3px 5px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div id="game-container" class="max-w-2xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-xl overflow-hidden relative min-h-[550px] flex flex-col justify-between">
+        
+        <div id="top-framework">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">故事山挑戰</h1>
+                <h2 class="text-xl text-blue-600 font-semibold">《三隻小豬》</h2>
+            </div>
+
+            <div class="mountain-container border border-gray-100">
+                <div id="step-1" class="mountain-step step-1"><span class="absolute -top-8 left-0 w-full text-center text-xs">開端</span></div>
+                <div id="step-2" class="mountain-step step-2"><span class="absolute -top-8 left-0 w-full text-center text-xs">發展</span></div>
+                <div id="step-3" class="mountain-step step-3"><span class="absolute -top-8 left-0 w-full text-center text-xs">高潮</span></div>
+                <div id="step-4" class="mountain-step step-4"><span class="absolute -top-8 left-0 w-full text-center text-xs">下降</span></div>
+                <div id="step-5" class="mountain-step step-5"><span class="absolute -top-8 left-0 w-full text-center text-xs">結局</span></div>
+            </div>
+        </div>
+
+        <div id="content" class="fade-in flex-grow flex flex-col justify-center">
+            
+            <div id="start-screen" class="absolute inset-0 full-cover-bg flex flex-col items-center justify-end p-6 text-center">
+                <div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg max-w-md w-full mb-8 border border-white/50">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-1">故事藥草學</h1>
+                    <h2 class="text-xl text-blue-600 font-bold mb-6">《三隻小豬》</h2>
+                    <button onclick="showIntro()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-full transition duration-300 shadow-md transform hover:scale-105">
+                        進入遊戲
+                    </button>
+                </div>
+            </div>
+
+            <div id="intro-screen" class="hidden absolute inset-0 full-cover-bg flex flex-col items-center justify-end p-6 text-center">
+                <div class="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg max-w-md w-full mb-8 border border-white/50 relative">
+                    <button onclick="goBackToStart()" class="absolute top-4 left-4 text-gray-500 hover:text-gray-700 text-sm font-medium transition duration-200">
+                        &larr; 返回
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-2">課前引言</h2>
+                    <p class="text-gray-700 text-sm md:text-base leading-relaxed mb-6 font-medium">
+                        今天，我想來點不一樣的！<br>
+                        各位同學一定聽過「故事山」吧！大家還記得「故事山」<br>
+                        有哪些元素呢？
+                    </p>
+                    <button onclick="showStoryMountainQuestion()" class="bg-[#1da453] hover:bg-green-700 text-white font-bold py-3 px-10 rounded-full transition duration-300 shadow-md transform hover:scale-105">
+                        開始挑戰
+                    </button>
+                </div>
+            </div>
+
+            <div id="story-mountain-question-screen" class="hidden absolute inset-0 mountain-bg overflow-hidden text-center rounded-2xl">
+                
+                <button onclick="goBackToIntro()" class="absolute top-4 left-4 z-30 text-gray-800 hover:text-black font-extrabold text-sm transition duration-200 text-outline pointer-events-auto">
+                    &larr; 返回
+                </button>
+
+                <div class="absolute inset-0 pointer-events-none z-10">
+                    <div onclick="returnToPool(0)" id="slot-0" class="pointer-events-auto absolute w-[16%] h-[10%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg border-2 border-dashed border-gray-800/60 bg-white/30 hover:bg-white/50" style="left: 14%; top: 73%; transform: translate(-50%, -50%);"></div>
+                    <div onclick="returnToPool(1)" id="slot-1" class="pointer-events-auto absolute w-[16%] h-[10%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg border-2 border-dashed border-gray-800/60 bg-white/30 hover:bg-white/50" style="left: 31%; top: 51%; transform: translate(-50%, -50%);"></div>
+                    <div onclick="returnToPool(2)" id="slot-2" class="pointer-events-auto absolute w-[16%] h-[10%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg border-2 border-dashed border-gray-800/60 bg-white/30 hover:bg-white/50" style="left: 59%; top: 18%; transform: translate(-50%, -50%);"></div>
+                    <div onclick="returnToPool(3)" id="slot-3" class="pointer-events-auto absolute w-[16%] h-[10%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg border-2 border-dashed border-gray-800/60 bg-white/30 hover:bg-white/50" style="left: 77%; top: 51%; transform: translate(-50%, -50%);"></div>
+                    <div onclick="returnToPool(4)" id="slot-4" class="pointer-events-auto absolute w-[16%] h-[10%] flex items-center justify-center cursor-pointer transition-all shadow-sm rounded-lg border-2 border-dashed border-gray-800/60 bg-white/30 hover:bg-white/50" style="left: 92%; top: 68%; transform: translate(-50%, -50%);"></div>
+                </div>
+
+                <div class="relative z-20 flex flex-col items-center justify-end pb-6 p-4 w-full h-full pointer-events-none">
+                    <div class="max-w-lg w-full relative pointer-events-auto">
+                        
+                        <p class="text-gray-900 text-lg md:text-xl font-extrabold leading-relaxed mb-3 text-outline">
+                            看到這座山，你還記得「故事山」<br>
+                            由左到右的五個階段分別是什麼嗎？
+                        </p>
+
+                        <div class="mb-2">
+                            <p class="text-sm md:text-base text-blue-900 font-extrabold mb-3 text-outline tracking-wider">💡 點擊下方旗子，放到圖中對應的空白處：</p>
+                            
+                            <div id="options-pool" class="flex flex-wrap justify-center gap-2 min-h-[40px] mb-2">
+                                </div>
+                            
+                            <div id="feedback-msg" class="h-6 text-sm flex items-center justify-center text-outline"></div>
+                        </div>
+
+                        <button id="success-next-btn" onclick="showStoryMountainAnswer()" class="hidden bg-[#1da453] hover:bg-green-700 text-white font-bold py-2.5 px-8 rounded-full transition duration-300 shadow-xl transform hover:scale-105 mx-auto mt-1 border-2 border-white/50">
+                            進入解答頁
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="story-mountain-answer-screen" class="hidden absolute inset-0 mountain-ans-bg flex flex-col items-center justify-start pt-10 p-6 text-center">
+                <div class="bg-[#f9fafb]/90 backdrop-blur-md p-6 rounded-2xl shadow-lg max-w-md w-full border border-white/50 relative">
+                    <button onclick="goBackToQuestion()" class="absolute top-4 left-4 text-gray-500 hover:text-gray-700 text-sm font-medium transition duration-200">
+                        &larr; 返回
+                    </button>
+                    <p class="text-gray-800 text-base md:text-lg font-bold leading-relaxed mb-4 mt-6">
+                        一個完整的故事，通常會經歷這五個階段：<br>
+                        <span class="text-blue-600 font-black block mt-3 mb-2 text-xl tracking-wider">開端 ➔ 發展 ➔ 高潮 ➔ 下降 ➔ 結局</span>
+                    </p>
+                    <button onclick="startQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-full transition duration-300 shadow-md transform hover:scale-105">
+                        正式開始
+                    </button>
+                </div>
+            </div>
+
+            <div id="quiz-screen" class="hidden">
+                <div class="mb-4">
+                    <span id="stage-badge" class="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">階段名稱</span>
+                </div>
+                <div id="stage-desc" class="text-sm text-gray-500 mb-4 italic"></div>
+                <h3 id="question-text" class="text-xl font-bold text-gray-800 mb-6"></h3>
+                
+                <div class="space-y-4">
+                    <button onclick="handleAnswer(0)" class="w-full text-left p-4 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition duration-200 group">
+                        <span class="inline-block w-8 h-8 bg-gray-100 group-hover:bg-blue-100 text-center leading-8 rounded-full mr-3">A</span>
+                        <span id="opt-0"></span>
+                    </button>
+                    <button onclick="handleAnswer(1)" class="w-full text-left p-4 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition duration-200 group">
+                        <span class="inline-block w-8 h-8 bg-gray-100 group-hover:bg-blue-100 text-center leading-8 rounded-full mr-3">B</span>
+                        <span id="opt-1"></span>
+                    </button>
+                </div>
+
+                <div class="mt-6 text-left">
+                    <button id="back-btn" onclick="goBack()" class="text-gray-400 hover:text-blue-600 text-sm font-medium transition duration-200 flex items-center">
+                        &larr; <span id="back-btn-text" class="ml-1">回到上一題</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="feedback-screen" class="hidden text-center">
+                <div id="feedback-icon" class="text-5xl mb-4"></div>
+                <h4 id="feedback-title" class="text-2xl font-bold mb-4"></h4>
+                <p id="feedback-text" class="text-gray-600 mb-8 leading-relaxed px-4"></p>
+                <button onclick="nextStage()" class="bg-gray-800 hover:bg-black text-white font-bold py-2 px-6 rounded-lg transition">
+                    下一個階段
+                </button>
+            </div>
+
+            <div id="result-screen" class="hidden text-center">
+                <h4 class="text-2xl font-bold text-green-600 mb-4">挑戰完成！</h4>
+                <p class="text-gray-700 mb-6">
+                    你已經成功運用「故事山」拆解了《三隻小豬》。<br>
+                    透過這樣的分析，我們可以發現即使是簡單的童話故事，也具備極佳的戲劇張力與完整結構。
+                </p>
+                <div class="bg-gray-50 p-6 rounded-xl text-left mb-6">
+                    <p class="font-bold mb-2">💡 學習小結：</p>
+                    <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">
+                        <li>開端：豬媽媽讓小豬們各自離家，建立獨立蓋房子的目標。</li>
+                        <li>發展：大野狼出現，連續吹垮大哥的茅草屋和二哥的木屋。</li>
+                        <li>高潮：大野狼吹不倒磚瓦房，決定鋌而走險從煙囪爬入。</li>
+                        <li>下降：大野狼掉入滾水鍋中痛得大叫，危機解除。</li>
+                        <li>結局：大野狼落荒而逃，小豬們學會了腳踏實地的重要性。</li>
+                    </ul>
+                </div>
+                <button onclick="location.reload()" class="text-blue-600 hover:underline">重新體驗</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stages = [
+            {
+                name: "開端 (Exposition)",
+                desc: "描述已有的故事背景以及人物。",
+                question: "「豬媽媽讓三隻小豬各自去蓋自己的房子，準備獨立生活。」這句話在故事山中，最主要的作用是什麼？",
+                options: [
+                    "建立人物（三隻小豬）、背景與故事的初始目標（蓋房子獨立生活）。",
+                    "為了讓大野狼馬上出現把小豬吃掉，製造恐怖氣氛。"
+                ],
+                correct: 0,
+                feedback: "沒錯！開端就是要設定故事背景與角色的初始目標。透過「各自蓋房子」，讓故事有了明確的出發點與動機。"
+            },
+            {
+                name: "發展 (Rising Action)",
+                desc: "豐富已有的任務情節，慢慢引向問題和矛盾。",
+                question: "大野狼輕鬆吹垮了大哥的茅草屋和二哥的木屋，兩隻小豬驚慌地逃到小弟的磚瓦房. 這段情節在故事山中起到了什麼作用？",
+                options: [
+                    "這是故事的結束，因為大哥和二哥已經沒有房子可以住了。",
+                    "逐步增加危機感，透過大野狼的連續破壞，將緊張氣氛不斷推高。"
+                ],
+                correct: 1,
+                feedback: "正確。發展階段會透過一連串的衝突來累積張力，大野狼不斷逼近，最後將三隻小豬逼退到同一陣線，讓讀者越來越緊張。"
+            },
+            {
+                name: "高潮 (Climax)",
+                desc: "矛盾顯現，人物們如何處理矛盾或解決問題？",
+                question: "大野狼用力吹卻吹不倒磚瓦房，最後決定從煙囪爬進去抓小豬。這段情節為何被視為故事的高潮？",
+                options: [
+                    "這是雙方對決最激烈的時刻，大野狼使出最後手段，主角面臨最大的危機與轉折。",
+                    "因為大野狼吹累了，需要從煙囪爬下來休息一下。"
+                ],
+                correct: 0,
+                feedback: "答對了！高潮是衝突最激烈、最決定性的瞬間。大野狼從煙囪爬下，是整個故事最驚險的轉折點，決定了最後的勝負。"
+            },
+            {
+                name: "下降 (Falling Action)",
+                desc: "事件慢慢得到解決，開始冷靜下來。",
+                question: "大野狼從煙囪掉下來，正好落入豬小弟準備好的滾水鍋裡，痛得大叫。這個動作在結構上的意義為何？",
+                options: [
+                    "代表豬小弟打算請大野狼喝熱湯，雙方達成了和解。",
+                    "這是危機解除的過程，大野狼受到懲罰，故事的緊張感開始消退。"
+                ],
+                correct: 1,
+                feedback: "是的。下降階段通常是高潮過後，衝突開始解決、緊張感得到釋放的過程。「掉進滾水鍋」代表大野狼的威脅正在瓦解。"
+            },
+            {
+                name: "結局 (Resolution)",
+                desc: "問題解決了，人物感覺如何？是悲劇還是喜劇？",
+                question: "故事最後大野狼落荒而逃，三隻小豬在堅固的磚瓦房裡安心地生活在一起。這對整座故事山而言，是什麼樣的收尾？",
+                options: [
+                    "展現主角們克服困難後的結果，並帶出「腳踏實地」的教育意義，是典型的圓滿收場。",
+                    "這暗示大野狼很快又會回來，故事其實還沒有真正結束。"
+                ],
+                correct: 0,
+                feedback: "完全正確。結局為故事畫下句點，小豬們的安全生活對比了先前的危機，讓讀者獲得安心感，也點出了故事的核心寓意。"
+            }
+        ];
+
+        let currentStage = 0;
+
+        // ==== 互動式故事山邏輯 ====
+        let slotAnswers = [null, null, null, null, null];
+        const correctOrder = ['開端', '上升', '高潮', '下降', '結局'];
+        const initialFlags = ['高潮', '開端', '結局', '上升', '下降']; // 預設打亂的旗子
+
+        function initInteractiveMountain() {
+            slotAnswers = [null, null, null, null, null];
+            document.getElementById('feedback-msg').innerHTML = '';
+            
+            // 隱藏進入下一步的按鈕
+            document.getElementById('success-next-btn').classList.add('hidden');
+            
+            renderPool();
+            renderSlots();
+        }
+
+        function renderPool() {
+            const poolEl = document.getElementById('options-pool');
+            poolEl.innerHTML = '';
+            initialFlags.forEach(word => {
+                if(!slotAnswers.includes(word)) {
+                    const btn = document.createElement('button');
+                    btn.className = "bg-orange-100 border-2 border-orange-400 text-orange-800 font-bold py-1.5 px-3 rounded shadow-md hover:bg-orange-200 transition-colors flex items-center text-sm transform hover:-translate-y-1 pointer-events-auto";
+                    btn.innerHTML = `🚩 ${word}`;
+                    btn.onclick = () => moveToSlot(word);
+                    poolEl.appendChild(btn);
+                }
+            });
+        }
+
+        function renderSlots() {
+            for(let i=0; i<5; i++) {
+                const slotEl = document.getElementById(`slot-${i}`);
+                if(slotAnswers[i]) {
+                    slotEl.innerHTML = `<span class="bg-white/95 border-2 border-blue-400 text-blue-800 font-extrabold py-1 px-1 rounded shadow-md text-xs md:text-sm w-full h-full flex items-center justify-center tracking-wider text-outline truncate shadow-inner">🚩 ${slotAnswers[i]}</span>`;
+                    slotEl.classList.remove('border-dashed', 'border-gray-800/60', 'bg-white/30');
+                    slotEl.classList.add('border-solid', 'border-transparent', 'bg-transparent');
+                } else {
+                    slotEl.innerHTML = `<span class="text-gray-800 text-base md:text-lg font-black opacity-80 drop-shadow-md text-outline">${i+1}</span>`;
+                    slotEl.classList.add('border-dashed', 'border-gray-800/60', 'bg-white/30');
+                    slotEl.classList.remove('border-solid', 'border-transparent', 'bg-transparent');
+                }
+            }
+        }
+
+        function moveToSlot(word) {
+            const emptyIdx = slotAnswers.indexOf(null);
+            if(emptyIdx !== -1) {
+                slotAnswers[emptyIdx] = word;
+                renderPool();
+                renderSlots();
+                checkCompletion();
+            }
+        }
+
+        function returnToPool(idx) {
+            if(slotAnswers[idx] !== null) {
+                slotAnswers[idx] = null;
+                document.getElementById('feedback-msg').innerHTML = ''; // 清除回饋訊息
+                document.getElementById('success-next-btn').classList.add('hidden'); // 隱藏按鈕
+                renderPool();
+                renderSlots();
+            }
+        }
+
+        function checkCompletion() {
+            if(!slotAnswers.includes(null)) {
+                let isCorrect = true;
+                for(let i=0; i<5; i++) {
+                    if(slotAnswers[i] !== correctOrder[i]) isCorrect = false;
+                }
+                
+                if(isCorrect) {
+                    document.getElementById('feedback-msg').innerHTML = '<span class="text-green-400 font-extrabold text-base text-outline tracking-wide">🎉 排序完全正確！太厲害了！</span>';
+                    document.getElementById('success-next-btn').classList.remove('hidden'); // 答對才顯示按鈕
+                } else {
+                    document.getElementById('feedback-msg').innerHTML = '<span class="text-red-400 font-extrabold text-sm text-outline">🤔 順序怪怪的，點擊山上的旗子可以退回重排喔！</span>';
+                    document.getElementById('success-next-btn').classList.add('hidden');
+                }
+            }
+        }
+        // ============================
+
+        // 初始化頁面：隱藏頂部白底的故事山框架
+        document.getElementById('top-framework').style.display = 'none';
+
+        function showIntro() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+        }
+
+        function goBackToStart() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showStoryMountainQuestion() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('story-mountain-question-screen').classList.remove('hidden');
+            initInteractiveMountain(); // 初始化互動遊戲
+        }
+
+        function goBackToIntro() {
+            document.getElementById('story-mountain-question-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+        }
+
+        function showStoryMountainAnswer() {
+            document.getElementById('story-mountain-question-screen').classList.add('hidden');
+            document.getElementById('story-mountain-answer-screen').classList.remove('hidden');
+        }
+
+        function goBackToQuestion() {
+            document.getElementById('story-mountain-answer-screen').classList.add('hidden');
+            document.getElementById('story-mountain-question-screen').classList.remove('hidden');
+        }
+
+        function startQuiz() {
+            document.getElementById('story-mountain-answer-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('top-framework').style.display = 'block'; // 顯示題目框架
+            showStage();
+        }
+
+        function showStage() {
+            const stage = stages[currentStage];
+            
+            // 處理故事山視覺狀態
+            for(let i=1; i<=5; i++) {
+                const el = document.getElementById(`step-${i}`);
+                el.classList.remove('active', 'completed');
+                if(i <= currentStage) el.classList.add('completed');
+                if(i === currentStage + 1) el.classList.add('active');
+            }
+
+            // 更新文字內容
+            document.getElementById('stage-badge').innerText = stage.name;
+            document.getElementById('stage-desc').innerText = stage.desc;
+            document.getElementById('question-text').innerText = stage.question;
+            document.getElementById('opt-0').innerText = stage.options[0];
+            document.getElementById('opt-1').innerText = stage.options[1];
+
+            // 判斷上一頁按鈕顯示文字
+            const backBtnText = document.getElementById('back-btn-text');
+            if(currentStage === 0) {
+                backBtnText.innerText = "返回故事山解答";
+            } else {
+                backBtnText.innerText = "回到上一題";
+            }
+        }
+
+        function handleAnswer(choice) {
+            const stage = stages[currentStage];
+            const quizScreen = document.getElementById('quiz-screen');
+            const feedbackScreen = document.getElementById('feedback-screen');
+            
+            quizScreen.classList.add('hidden');
+            feedbackScreen.classList.remove('hidden');
+            
+            if(choice === stage.correct) {
+                document.getElementById('feedback-icon').innerText = "✨";
+                document.getElementById('feedback-title').innerText = "理解正確！";
+                document.getElementById('feedback-title').className = "text-2xl font-bold mb-4 text-green-600";
+            } else {
+                document.getElementById('feedback-icon').innerText = "🤔";
+                document.getElementById('feedback-title').innerText = "換個角度想想";
+                document.getElementById('feedback-title').className = "text-2xl font-bold mb-4 text-orange-600";
+            }
+            document.getElementById('feedback-text').innerText = stage.feedback;
+        }
+
+        function nextStage() {
+            const feedbackScreen = document.getElementById('feedback-screen');
+            currentStage++;
+            
+            if(currentStage < stages.length) {
+                feedbackScreen.classList.add('hidden');
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                showStage();
+            } else {
+                feedbackScreen.classList.add('hidden');
+                document.getElementById('result-screen').classList.remove('hidden');
+                document.getElementById(`step-5`).classList.add('completed');
+                document.getElementById(`step-5`).classList.remove('active');
+            }
+        }
+
+        function goBack() {
+            if (currentStage > 0) {
+                currentStage--;
+                showStage();
+            } else {
+                document.getElementById('quiz-screen').classList.add('hidden');
+                document.getElementById('story-mountain-answer-screen').classList.remove('hidden');
+                document.getElementById('top-framework').style.display = 'none'; 
+                
+                for(let i=1; i<=5; i++) {
+                    const el = document.getElementById(`step-${i}`);
+                    el.classList.remove('active', 'completed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
