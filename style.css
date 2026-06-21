@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
+
+body {
+    font-family: 'Noto+Serif+TC', serif;
+    background-color: #f3f4f6;
+}
+
+.mountain-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    background: #fff;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.mountain-step {
+    width: 15%;
+    background: #e5e7eb;
+    transition: all 0.5s ease;
+    position: relative;
+    border-radius: 4px 4px 0 0;
+}
+
+.mountain-step.active {
+    background: #3b82f6;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+.mountain-step.completed {
+    background: #93c5fd;
+}
+
+/* 模擬山形高度 */
+.step-1 { height: 20%; }
+.step-2 { height: 50%; }
+.step-3 { height: 90%; }
+.step-4 { height: 50%; }
+.step-5 { height: 20%; }
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 滿版背景圖片樣式 */
+.full-cover-bg {
+    background-image: url('threelittlepigs_bg.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.mountain-bg {
+    background-image: url('mountain01.png');
+    background-size: 100% 100%;
+    background-position: center;
+}
+
+.mountain-ans-bg {
+    background-image: url('mountainans.png');
+    background-size: 100% 100%;
+    background-position: center;
+}
+
+.text-outline {
+    text-shadow: 
+        -1px -1px 0 #ffffff,  
+         1px -1px 0 #ffffff,
+        -1px  1px 0 #ffffff,
+         1px  1px 0 #ffffff,
+         0px  3px 5px rgba(0,0,0,0.4);
+}
